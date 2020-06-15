@@ -1,0 +1,41 @@
+var navigation = responsiveNav(".nav-collapse", {
+    animate: true,
+    transition: 300,
+    label: "",
+    insert: "after",
+    customToggle: "",
+    closeOnNavClick: false,
+    openPos: "relative",
+    navClass: "nav-collapse",
+    navActiveClass: "js-nav-active",
+    jsClass: "js",
+    init: function(){},
+    open: function(){},
+    close: function(){}
+});
+
+(function($) {
+    'use strict';
+
+    $(document).ready(function() {
+        // Cookie banner
+        $('.cookie-accept').click(function() {
+            $.cookie('acceptCookies', 1, { expires: 365, path: '/' });
+            $('.cookie-banner').remove();
+        });
+    });
+    
+    if($('body').hasClass('home')) {
+	    $('.row-divider:first-of-type').addClass('boxed');
+	}
+		
+	$('.event_feat:first-of-type, .no-list.news li:first-child, .podcasts.in-podcasts .no-list li:first-child').addClass('boxed boxed__muted');
+	
+    var buttonSpanText;
+    $('.show-hide-services').parent().parent().parent().next().hide().addClass('row-expand');
+    $('.show-hide-services').click(function(e) {
+        e.preventDefault();
+        $(this).toggleClass('active').parent().parent().parent().next().slideToggle(200);
+    });
+		    			
+}(jQuery));

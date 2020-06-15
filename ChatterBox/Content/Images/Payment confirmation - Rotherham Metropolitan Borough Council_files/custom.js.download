@@ -1,0 +1,776 @@
+// Custom javascripts
+// Developed by Pete Lawrenson at RMBC
+// 01/02/16
+
+// needs to be minified upon completion
+
+// don't use jquery, it will not be present on Galaxies
+// avoid conflicts - set up a namespace if not already setup
+var tc = tc || {};
+
+// global variables
+tc.page_colours = tc.page_colours || false;
+tc.your_services = tc.your_services || false;
+tc.your_jobs = tc.your_jobs || false;
+tc.carousel = tc.carousel || false; 
+
+// definitions
+
+tc.start = function () {
+  // detect if dom is ready =
+  // - before page colours fires
+  // - before related pages fires
+  if (document.addEventListener) {
+    // gets here
+    // for all major browsers, except IE8 and earlier
+    document.addEventListener("DOMContentLoaded", tc.init(), false);
+  } else if (document.attachEvent) {
+    // fallback, < 1 in 100 browsers
+    // works with IE8 - IE8 = 0.5% of browsers, IE7 = 0.1% ofbrowsers
+    document.attachEvent("onload", tc.init);
+  } else {
+    // not going to get here hardly at all
+    // waits for everything, including images
+    // needs empty window.onunload
+    // widely supported
+    window.onload = tc.init;
+  }
+}; // end function
+
+tc.init = function () {
+  // fire page colours if required
+  if (tc.page_colours) {
+    tc.addInnerDivs();
+  }    
+  // setup map if required
+  if (tc.your_services) {
+    tc.setupMap("services_map", tc.centre_lat, tc.centre_lng, tc.zoom);
+    tc.plotPostcode();
+  }
+  // start jobs if required
+  if (tc.your_jobs) {
+    var elements = document.getElementsByClassName(tc.your_jobs_div);
+    tc.getHtml(tc.your_jobs_url, elements[0]);
+  }
+  // fire related pages, it will execute if it can
+  // tc.getRelatedPages(0); // for review
+  // start carousel if required
+  if (tc.carousel) {
+    tc.startCarousel();
+  } 
+}; // end function
+  
+  // ================ ASYNCHRONOUS AJAX REQUESTS =================================
+  
+tc.getResponse = function (url, callback, callback_parameter) {
+  // alert (url);
+  // fetch an asynchronous response from the given url
+  // the response could be html page content, a javascript or an error
+  var xmlhttp;
+  if (window.XMLHttpRequest) {
+    // code for IE7+, Firefox, Chrome, Opera, Safari
+    xmlhttp = new XMLHttpRequest();
+  } else {
+    // code for IE6, IE5
+    xmlhttp = new document.ActiveXObject("Microsoft.XMLHTTP");
+  }
+  // setup the response handling function
+  xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState === 4) {
+      if (xmlhttp.status == 200) {
+        callback(xmlhttp.responseText, callback_parameter);
+      }
+    }
+  }; // end inner function
+  // make the call
+  xmlhttp.open("GET", url, true); // asynchronous
+  xmlhttp.send();
+}; // end function
+
+tc.handleHtml = function (response, element) {
+  element.innerHTML = element.innerHTML + response;
+}; // end function
+
+tc.getHtml = function (filename, element) {
+  // get some html from url and put it elements
+  if (typeof element == "object") {
+    var url = "http://www.rotherham.gov.uk/files/" + filename;
+    // getResponse(url_to_use, callback_function, optional_parameter);
+    tc.getResponse(url, tc.handleHtml, element); // insertHtml() is not called if error
+  }
+}; // end function
+
+// ================ PAGE COLOURS ===============================================
+
+tc.addInnerDivs = function (){
+  var containers = [], headers = [], breadcrumb, mains = [], rows = [], i, feedback, feedback_inner, footers = [], inner;
+  containers = document.getElementsByClassName("container");
+  if (containers.length) {
+    if (tc.container_colour) {
+      containers[0].style.backgroundColor = tc.container_colour;
+    }
+    if (tc.container_padding_top) {
+      containers[0].style.paddingTop = tc.container_padding_top + "px";
+    }
+    if (tc.container_padding_bottom) {
+      containers[0].style.paddingBottom = tc.container_padding_bottom + "px";
+    }
+    if (tc.container_margin_top) {
+      containers[0].style.marginTop = tc.container_margin_top + "px";
+    }
+    if (tc.container_margin_bottom) {
+      containers[0].style.marginBottom = tc.container_margin_bottom + "px";
+    }
+    containers[0].style.maxWidth = "none";
+    containers[0].style.paddingLeft = "0";        
+    containers[0].style.paddingRight = "0";        
+  }
+
+  breadcrumb = document.getElementById("breadcrumb");
+  if (breadcrumb) {
+    if (tc.breadcrumb_colour) {
+      breadcrumb.style.backgroundColor = tc.breadcrumb_colour;
+      if (tc.breadcrumb_padding_top) {
+        breadcrumb.style.paddingTop = tc.breadcrumb_padding_top + "px";
+      }
+      if (tc.breadcrumb_padding_bottom) {
+        breadcrumb.style.paddingBottom = tc.breadcrumb_padding_bottom + "px";
+      }
+      if (tc.breadcrumb_margin_top) {
+        breadcrumb.style.marginTop = tc.breadcrumb_margin_top + "px";
+      }
+      if (tc.breadcrumb_margin_bottom) {
+        breadcrumb.style.marginBottom = tc.breadcrumb_margin_bottom + "px";
+      }
+      breadcrumb.innerHTML = '<div id="breadcrumb-inner">' + breadcrumb.innerHTML + '</div>';
+      inner = document.getElementById("breadcrumb-inner");
+      inner.style.maxWidth = tc.max_width + "px";
+      inner.style.margin = "auto";
+    } else {
+      breadcrumb.style.maxWidth = tc.max_width + "px";
+      breadcrumb.style.margin = "auto";
+    }      
+  }
+
+  if (tc.main_colour) {
+    mains = document.getElementsByClassName("main");
+    if (mains.length) {
+      if (tc.main_colour) {
+        mains[0].style.backgroundColor = tc.main_colour;
+      }
+      if (tc.main_padding_top) {
+        mains[0].style.paddingTop = tc.main_padding_top + "px";
+      }
+      if (tc.main_padding_bottom) {
+        mains[0].style.paddingBottom = tc.main_padding_bottom + "px";
+      }
+      if (tc.main_margin_top) {
+        mains[0].style.marginTop = tc.main_margin_top + "px";
+      }
+      if (tc.main_margin_bottom) {
+        mains[0].style.marginBottom = tc.main_margin_bottom + "px";
+      }
+      mains[0].style.overlow = "hidden";
+    }
+  }
+
+  rows = document.getElementsByTagName("h1");
+  if (rows.length) {
+    for (i = 0; i < rows.length; i = i + 1) {
+      rows[i].style.maxWidth = tc.max_width + "px";
+      rows[i].style.margin = "auto";
+    }
+  }
+  
+  rows = document.getElementsByClassName("row-divider");
+  if (rows.length) {
+    for (i = 0; i < rows.length; i = i + 1) {
+      if (tc.row_colours[i]) {
+        rows[i].style.backgroundColor = tc.row_colours[i];
+      }
+      if (tc.row_padding_tops[i]) {
+        rows[i].style.paddingTop = tc.row_padding_tops[i] + "px";
+      }
+      if (tc.row_padding_bottoms[i]) {
+        rows[i].style.paddingBottom = tc.row_padding_bottoms[i] + "px";
+      }
+      if (tc.row_margin_tops[i]) {
+        rows[i].style.marginTop = tc.row_margin_tops[i] + "px";
+      }
+      if (tc.row_margin_bottoms[i]) {
+        rows[i].style.marginBottom = tc.row_margin_bottoms[i] + "px";
+      }
+      rows[i].innerHTML = '<div class="row-divider-inner">' + rows[i].innerHTML + '</div><!-- end row-divider-inner -->';
+    }
+  }
+  rows = document.getElementsByClassName("row-divider-inner");
+  if (rows.length) {
+    for (i = 0; i < rows.length; i = i + 1) {
+      rows[i].style.maxWidth = tc.max_width + "px";
+      rows[i].style.margin = "auto";
+    }
+  }
+
+ rows = document.getElementsByClassName("documents_wrap");
+  if (rows.length) {
+    for (i = 0; i < rows.length; i = i + 1) {
+      rows[i].innerHTML = '<div class="documents_wrap-inner">' + rows[i].innerHTML + '</div><!-- end documents_wrap-inner -->';
+    }
+  }
+  rows = document.getElementsByClassName("documents_wrap-inner");
+  if (rows.length) {
+    for (i = 0; i < rows.length; i = i + 1) {
+      rows[i].style.maxWidth = tc.max_width + "px";
+      rows[i].style.margin = "auto";
+    }
+  }
+
+  feedback = document.getElementById("feedback");
+  if (feedback) {
+    if (tc.feedback_colour) {
+      feedback.style.backgroundColor = tc.feedback_colour;
+      if (tc.feedback_padding_top) {
+        feedback.style.paddingTop = tc.feedback_padding_top + "px";
+      }
+      if (tc.feedback_padding_bottom) {
+        feedback.style.paddingBottom = tc.feedback_padding_bottom + "px";
+      }
+      if (tc.feedback_margin_top) {
+        feedback.style.marginTop = tc.feedback_margin_top + "px";
+      }
+      if (tc.feedback_margin_bottom) {
+        feedback.style.marginBottom = tc.feedback_margin_bottom + "px";
+      }
+      feedback.innerHTML = '<div id="feedback-inner">' + feedback.innerHTML + '</div><!-- end feedback-inner -->';
+      inner = document.getElementById("feedback-inner");
+      inner.style.maxWidth = tc.max_width + "px";
+      inner.style.margin = "auto";
+    } else {
+      feedback.style.maxWidth = tc.max_width + "px";
+      feedback.style.margin = "auto";
+    }
+  }
+
+  footers = document.getElementsByTagName("footer");
+  if (footers.length > 0) {
+    if (tc.footer_colour) {
+      footers[0].style.backgroundColor = tc.footer_colour;
+      if (tc.footer_padding_top) {
+        footers[0].style.paddingTop = tc.footer_padding_top + "px";
+      }
+      if (tc.footer_padding_bottom) {
+        footers[0].style.paddingBottom = tc.footer_padding_bottom + "px";
+      }
+      if (tc.footer_margin_top) {
+        footers[0].style.marginTop = tc.footer_margin_top + "px";
+      }
+      if (tc.footer_margin_bottom) {
+        footers[0].style.marginBottom = tc.footer_margin_bottom + "px";
+      }
+      footers[0].style.border = "none";
+      footers[0].innerHTML = '<div id="footer-inner" class="boxed">' + footers[0].innerHTML + '</div><!-- end footer-inner -->';
+      inner = document.getElementById("footer-inner");
+      inner.style.maxWidth = tc.max_width + "px";
+      inner.style.margin = "auto";
+    } else {
+      footers[0].style.maxWidth = tc.max_width + "px";
+      footers[0].style.margin = "auto";
+    }
+  }
+}; // end function
+
+// ================ RELATED PAGES ==============================================
+
+tc.getRelatedPages = function(debug) {
+  // get document id and page number
+  var inputs = [], doc_id, page_nr, xmlhttp, url, asides = [];
+  inputs = document.getElementsByName("itemID");
+  if (!inputs.length) { return; }
+  doc_id = inputs[0].value;
+  inputs = document.getElementsByName("pageNumber");
+  if (!inputs.length) { return; }
+  page_nr = inputs[0].value;
+  asides = document.getElementsByClassName("secondary-col");
+  if (!asides.length) { return; }
+  // fetch the list of related pages
+  url = 'get_related_pages.php?doc_id=' + doc_id + '&page_nr=' + page_nr + '&debug=' + debug;
+  tc.getHtml(url, asides[0]);
+}; // end function
+
+// ================ CAROUSEL ===================================================
+  
+// frames are numbered from 0 to n-1, n (=0)
+  
+tc.frame_width = "";
+tc.frame_nr = "";
+tc.my_clip = "";
+tc.my_timer = "";
+tc.my_animation = "";
+tc.offset = "";
+tc.to = "";
+tc.direction = "";
+tc.step = "";
+tc.step_nr = "";
+  
+tc.switchOffTimers = function () {
+  if (tc.my_animation) {
+    window.clearInterval(tc.my_animation);
+  }
+  if (tc.my_timer) {
+    window.clearTimeout(tc.my_timer);
+  }
+}; // end function
+  
+tc.intermediate = function() {
+  tc.step_nr = tc.step_nr + 1;
+  if (tc.step_nr < 40) {
+    tc.step = - tc.direction * 10;
+  } else {
+    tc.step = - tc.direction * 4;
+  }
+  tc.offset = tc.offset + tc.step;
+  if (tc.direction > 0) {
+    if (tc.offset <= tc.to) {
+      window.clearInterval(tc.my_animation);
+      tc.offset = tc.to;
+    }
+  } else {
+    if (tc.offset >= tc.to) {
+      window.clearInterval(tc.my_animation);
+      tc.offset = tc.to;
+    }
+  }
+  tc.my_clip.style.left = tc.offset + "px";
+}; // end function
+  
+tc.animate = function () {
+  tc.step_nr = 0;
+  tc.offset = -tc.frame_nr * tc.frame_width;
+  tc.frame_nr = tc.frame_nr + tc.direction;
+  tc.to = -tc.frame_nr * tc.frame_width;
+  tc.my_animation = window.setInterval(function () {tc.intermediate(); }, 6); // 6 = interval in milliseconds
+}; // end function
+  
+tc.nextFrame = function () {
+  tc.switchOffTimers();
+  tc.direction = 1;
+  if (tc.frame_nr === tc.nr_frames) {
+    tc.frame_nr = 0;
+    tc.my_clip.style.left = "0";
+  }
+  tc.animate();
+  tc.my_timer = window.setTimeout(function () {tc.nextFrame(); }, tc.milliseconds);
+}; // end function
+  
+tc.prevFrame = function () {
+  var max_left;
+  tc.switchOffTimers();
+  tc.direction = -1;
+  if (tc.frame_nr === 0) {
+    tc.frame_nr = tc.nr_frames;
+    max_left = -tc.nr_frames * tc.frame_width;
+    tc.my_clip.style.left = max_left + "px";
+  }
+  tc.animate();
+  tc.my_timer = window.setTimeout(function () {tc.prevFrame(); }, tc.milliseconds);
+}; // end function
+  
+tc.setWidths = function () {
+  var carousel_element, imgs, j, frames;
+  tc.switchOffTimers();
+  carousel_element = document.getElementById("carousel");
+  tc.frame_width = carousel_element.offsetWidth; // .style.width doesn't work
+  tc.my_clip = document.getElementById("carousel_clip");
+  tc.my_clip.style.left = "0";
+  // cannot be styled by css
+  imgs = tc.my_clip.getElementsByTagName('img');
+  for (j = 0; j < imgs.length; j++) {
+    imgs[j].style.width = tc.frame_width + "px";
+  }
+  frames = tc.my_clip.getElementsByTagName('div');
+  for (j = 0; j < frames.length; j++) {
+    frames[j].style.width = tc.frame_width + "px";
+  }
+  tc.my_timer = window.setTimeout(function () {tc.nextFrame(); }, tc.milliseconds);
+}; // end function
+  
+tc.startCarousel = function () {
+  if (tc.milliseconds === 0) {
+    tc.milliseconds = 7500; // default
+  }
+  tc.frame_nr = 0;
+  tc.setWidths();
+  window.onresize = function () {tc.setWidths(); }; // deal with browser width change
+}; // end function
+  
+  // ================ TELL US YOUR ADDRESS =======================================
+  
+tc.checkCharacters = function (postcode) {
+  var regx = /^[A-Z0-9 ]+$/; // uppercase, numbers and spaces allowed
+  return (regx.test(postcode));
+}; // end function
+  
+tc.errorMessage = function (text) {
+  var error_element;
+  error_element = document.getElementById("error_message");
+  error_element.innerHTML = text;
+  if (text.length === 0) {
+    error_element.style.display = "none";
+  } else {
+    error_element.style.display = "block";
+  }
+}; // end function
+  
+tc.checkPostcode = function () {
+  var valid, postcode, error_message, url;
+  valid = true;
+  postcode = document.getElementById('postcode').value;
+  postcode = postcode.trim();
+  postcode = postcode.toUpperCase();
+  if (postcode.length < 5) {
+    tc.errorMessage("The postcode is too short.");
+    return false;
+  }
+  if (valid && postcode.length > 8) {
+    tc.errorMessage("The postcode is too long.");
+    return false;
+  }
+  // check postcode contains only letters and numbers  
+  if (valid && !tc.checkCharacters(postcode)) { 
+    tc.errorMessage("The postcode contains invalid characters.");
+    return false;
+  }
+  // get addresses for postcode
+  url = 'http://www.rotherham.gov.uk/files/your_address/get_addresses_for_postcode.php?postcode=' + encodeURI(postcode);
+  tc.getResponse(url, tc.handleAddressList, '');
+  return false;
+}; // end function
+  
+tc.handleAddressList = function(response) {     
+  var address_pairs = [], select_element, i, values = [], option_element;
+  if (response) {
+    if (response.indexOf("+") == -1) { 
+      tc.errorMessage(response);
+      return;
+    } else {
+      address_pairs = response.split("+");
+    }
+  } else {
+    tc.errorMessage("Error: No response from server.");
+    return;
+  }
+  if (address_pairs.length == 1) {
+    values = address_pairs[0].split('-');
+    if (values[0] == "Error") {
+      tc.errorMessage(values[1]);
+      return;
+    }
+  }
+  tc.errorMessage('');
+  select_element = document.getElementById("address_select"); 
+  // clear any previous options
+  select_element.innerHTML = "";
+  option_element = document.createElement("option");
+  option_element.value = "";
+  option_element.textContent = "Select your address";
+  select_element.appendChild(option_element);
+  // populate the dropdown
+  for (i = 0; i < address_pairs.length; i++) {
+    values = address_pairs[i].split('-');
+    option_element = document.createElement("option");
+    option_element.value = values[0];
+    option_element.textContent = values[1];
+    select_element.appendChild(option_element);
+  }
+  document.getElementById("address_div").style.display = "block";
+}; // end function
+  
+tc.rememberUprn = function () {
+  var select_element, uprn, now, next_year, expires;
+  select_element = document.getElementById("address_select"); 
+  uprn = select_element.options[select_element.selectedIndex].value;
+  now = new Date();
+  next_year = new Date(now.getTime() + 1000*60*60*24*365);
+  expires = next_year.toGMTString();
+  document.cookie = "uprn=" + uprn + "; expires=" + expires + "; path=/";
+  // load the current page with address in querystring
+  location.href = encodeURI(tc.this_url + '?uprn=' + uprn);  
+}; // end function
+
+if (typeof google == "object") {
+
+  // namespace variables
+  tc.map = "";
+  tc.map_centre = "";
+  tc.initial_zoom = "";
+  tc.markers = [];
+  tc.polys = [];
+  tc.old_info_window = new window.google.maps.InfoWindow();
+
+  tc.setupMap = function (div_id, lat, lng, zoom) {
+    var options;
+    tc.initial_zoom = zoom;
+    tc.map_centre = new window.google.maps.LatLng(lat, lng);
+    options = {
+      center: tc.map_centre,
+      zoom: zoom,
+      scaleControl: true,
+      mapTypeId: window.google.maps.MapTypeId.ROADMAP
+    };
+    try { // conceal harmless error in IE7 & 8
+      tc.map = new window.google.maps.Map(document.getElementById(div_id), options);
+    } catch (err) {
+      tc.alert(err);
+    }
+  }; // end function
+
+  tc.getMore = function (value) {
+    if (!value) {
+      return '';
+    } else {  
+      var type, entry_id, url;
+      type = value.substring(0, 1);
+      if (type == 'e') {
+        entry_id = value.substring(1);
+        url = "http://www.rotherham.gov.uk/directory_record/" + entry_id + "/";
+      } else {
+        url = value;
+      }
+      return '<br /><a href="' + url + '" target="_blank">More information</a>';
+    }
+  }; // end function
+
+  tc.plotPoint = function (lat, lng, title, more, extra_info) {
+    var point, marker_options, marker, info, info_window_options, info_window;
+    if (document.body.style.maxHeight === "undefined") {
+      return; // IE6 and older browsers - no Google maps
+    }
+    point = new window.google.maps.LatLng(lat, lng);
+    // marker
+    marker_options = {
+      map: tc.map,
+      position: point,
+      title: title
+    };
+    marker = new window.google.maps.Marker(marker_options);
+    tc.markers.push(marker);
+    // marker_image is set before plotPoint() and applies to a series of points
+    if (typeof tc.marker_image !== 'undefined') { // otherwise will default to the red pin
+      marker.setIcon("http://www.rotherham.gov.uk/files/icons/" + tc.marker_image);
+    }
+    if (tc.marker_image == "my_address.png") {
+      marker.setZIndex(10000);
+    }
+    // info window
+    info = title;
+    if (extra_info) {
+      info = info + "<br />" + extra_info;
+    }
+    info = info + tc.getMore(more);
+    info_window_options = {
+      content: info,
+      disableAutoPan: false,
+      position: point
+    };
+    info_window = new window.google.maps.InfoWindow(info_window_options);
+    // listen for a click on this marker
+    window.google.maps.event.addListener(marker, "click", function() {
+      if (typeof tc.old_info_window === "object") {
+        tc.old_info_window.close();
+      }
+      info_window.open(tc.map); 
+      tc.old_info_window = info_window;
+    });
+  }; // end function
+    
+  tc.getPath = function () {
+    var lat, lng, path = [], i, point;
+    // decode coords[] as start_lat, start_lng, delta_lat, delta_lng, ... ;
+    lat = tc.coords[0];
+    lng = tc.coords[1];
+    path[0] = new window.google.maps.LatLng(lat, lng);
+    for (i = 2; i < tc.coords.length; i = i + 2) {
+      lat = lat + tc.coords[i] / 100000;
+      lng = lng + tc.coords[i + 1] / 100000;
+      point = new window.google.maps.LatLng(lat, lng);
+      path.push(point);
+    }
+    // end decode
+    return path;
+  }; // end function
+
+  tc.makeInfoWindow = function (poly, title, mid_lat, mid_lng, more) {
+    var info, options, info_window, mid_point;
+    mid_point = new window.google.maps.LatLng(mid_lat, mid_lng);
+    info = title + tc.getMore(more);
+    options = {
+      content: info,
+      disableAutoPan: false,
+      position: mid_point
+    };
+    info_window = new window.google.maps.InfoWindow(options);
+    // listen for a click on this line
+    window.google.maps.event.addListener(poly, "click", function() {
+      if (typeof tc.old_info_window === "object") {
+        tc.old_info_window.close();
+      }
+      info_window.open(tc.map); 
+      tc.old_info_window = info_window;
+    }); 
+  }; // end function
+
+  tc.plotPolyline = function (mid_lat, mid_lng, line_colour, line_thickness, title, more) {
+    var polyline, options, path = [];
+    path = tc.getPath();
+    // polyline
+    options = {
+      map: tc.map,
+      path: path,
+      strokeColor: line_colour,
+      strokeWeight: line_thickness
+    };
+    polyline = new window.google.maps.Polyline(options);
+    polyline.setMap(tc.map);
+    tc.polys.push(polyline);
+    tc.makeInfoWindow(polyline, title, mid_lat, mid_lng, more);
+  }; // end function
+  
+  tc.plotPolygon = function (mid_lat, mid_lng, line_colour, line_thickness, fill_colour, fill_opacity, title, more) {
+    var polygon, options, path = [];
+    path = tc.getPath();
+    // polygon
+    options = {
+      map: tc.map,
+      path: path,
+      strokeColor: line_colour,
+      strokeWeight: line_thickness,
+      strokeOpacity: 1.0,
+      fillColor: fill_colour,
+      fillOpacity: fill_opacity
+    };
+    polygon = new window.google.maps.Polygon(options);
+    polygon.setMap(tc.map);
+    tc.polys.push(polygon);
+    tc.makeInfoWindow(polygon, title, mid_lat, mid_lng, more);
+  }; // end function
+
+  tc.plotPostcode = function () {
+    if (!tc.max_features) {
+      tc.marker_image = "my_address.png";
+      tc.plotPoint(tc.centre_lat, tc.centre_lng, decodeURI(tc.postcode), "");
+    }
+  }; // end function
+  
+  tc.resetMap = function () {
+    var i, nr;
+    // close info_window if present
+    if (typeof tc.old_info_window === "object") {
+      tc.old_info_window.close();
+    }
+    // remove old markers
+    for (i = 0; i < tc.markers.length; i++) {
+      tc.markers[i].setMap(null);
+    }
+    tc.markers = [];
+    // remove old polys
+    for (i = 0; i < tc.polys.length; i++) {
+      tc.polys[i].setMap(null);
+    }
+    tc.polys = [];
+    // reset menu in case its highlighted
+    if (tc.active_menu != "primary") {
+      nr = tc.active_menu;
+      tc.active_menu = "primary";
+      tc.slotClicked(nr);
+    }
+    // reset map
+    tc.map.setCenter(tc.map_centre);
+    tc.map.setZoom(tc.initial_zoom);
+    tc.plotPostcode();
+  }; // end function
+
+  tc.plotMapData = function (response, unused) {
+    var oldzoom, bounds, i;
+    eval(response);
+    oldzoom = tc.map.getZoom();
+    // extend bounds if necessary
+    bounds = new window.google.maps.LatLngBounds();
+    for(i = 0; i < tc.markers.length; i++) {
+      bounds.extend(tc.markers[i].getPosition());
+    }
+    tc.map.fitBounds(bounds);
+    // don't zoom in
+    if(tc.map.getZoom() > oldzoom){
+      tc.map.setZoom(oldzoom);
+    }
+  }; // end function
+
+  tc.showServices = function (postcode, service_name) {
+    var url;
+    // an empty postcode is valid for show all
+    postcode = encodeURI(postcode);
+    if (!service_name) {
+      return;
+    }
+    service_name = encodeURI(service_name);
+    if (typeof tc.old_info_window === "object") {
+      tc.old_info_window.close();
+    }
+    url = 'http://www.rotherham.gov.uk/files/your_address/get_services.php?service_name=' + service_name + '&postcode=' + postcode + '&centre_lat=' + tc.centre_lat + '&centre_lng=' + tc.centre_lng + "&max_features=" + tc.max_features;
+    tc.getResponse(url, tc.plotMapData, ''); // plotMapData() is not called if error
+  }; // end function
+
+  tc.slotClicked = function (nr) {
+    var items, i, nav_class;
+    switch (tc.active_menu) {
+        case "primary":
+        tc.active_menu = nr;
+        items = tc.menus[nr].split(",");
+        for (i = 0; i < tc.max_slots - 1; i++) {
+          if (typeof items[i] == "string") {
+            tc.slot_elements[i].innerHTML = "<span>" + items[i] + "</span>";
+            tc.slot_elements[i].className = "nav_item nav_item_" + tc.active_menu; 
+          }  
+        }
+        tc.slot_elements[tc.max_slots - 1].innerHTML = '<img src="/files/icons/back.png" alt="Categories" class="back_icon">Back</span>';
+        tc.slot_elements[tc.max_slots - 1].className = "nav_item nav_item_" + tc.active_menu; 
+        break;
+      default:
+        if (nr == tc.max_slots - 1) {
+          // back 
+          for (i = 0; i < tc.max_slots; i++) {
+            items = tc.primary_menu.split(",");
+            tc.slot_elements[i].innerHTML = "<span>" + items[i] + "</span>";
+            tc.slot_elements[i].className = "nav_item nav_item_" + i; 
+          }    
+          tc.active_menu = "primary";
+        } else { 
+          // secondary menu item       
+          items = tc.menus[tc.active_menu].split(",");
+          for (i = 0; i < tc.max_slots; i++) {
+            nav_class = "nav_item nav_item_" + tc.active_menu;
+            if (i == nr) {
+              nav_class = nav_class + " active_" + tc.active_menu;
+            }
+            tc.slot_elements[i].className = nav_class; 
+          }
+          tc.showServices(tc.postcode, items[nr]);
+        }
+        break;
+    }   
+  }; // end function
+
+} // end google exists check
+    
+tc.start();
+
+// temporary edit of contact us link
+var li_elements, i, li_content;
+li_elements = document.getElementsByTagName('li');
+for (i = 0; i < li_elements.length; i++) {
+  li_content = li_elements[i].innerHTML; 
+  if (li_content == '<a accesskey="7" href="http://www.rotherham.gov.uk/contact">Contact us</a>') {
+    li_elements[i].innerHTML = '<a accesskey="7" href="http://www.rotherham.gov.uk/Contactus">Contact us</a>';
+    break;
+  }
+}

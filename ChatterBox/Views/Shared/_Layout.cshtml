@@ -1,0 +1,909 @@
+﻿@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+
+
+<!DOCTYPE html>
+
+<style>
+    .height805 {
+        height: 805px;
+    }
+
+    .height500 {
+        height: 500px;
+    }
+
+    .height305 {
+        height: 305px;
+    }
+
+    .boxFadeGrey {
+        background-color: rgba(238,238,238,0.5) !important;
+    }
+
+    .maroon {
+        color: maroon;
+    }
+
+    .boxEdge {
+        border-radius: 15px;
+    }
+
+    .noPad {
+        padding-top: 4% !important;
+        padding-bottom: 4% !important;
+    }
+
+    .bRoomContent {
+        border-top: 10px gold solid;
+    }
+
+    .tRoomContent {
+        border-top: 10px springgreen solid;
+    }
+
+    .rRoomContent {
+        border-top: 10px darkorchid solid;
+    }
+
+    .hClubContent {
+        border-top: 10px lightskyblue solid;
+    }
+
+    .ooClubContent {
+        border-top: 10px orangered solid;
+    }
+
+    .roomTabs {
+        border-top-left-radius: 15px !important;
+        border-top-right-radius: 15px !important;
+    }
+
+    .white {
+        color: white !important;
+    }
+
+    .carousel-content {
+        color: black;
+        display: flex;
+        align-items: center;
+    }
+
+    .ui-dialog-titlebar-close{
+        display: none;
+}
+
+    .bRadiusModal {
+        border-top-left-radius:6px;
+        border-top-right-radius:6px;
+    }
+
+
+    /*Purple Tabs*/
+
+    .nav-tabs {
+        border-bottom: 2px solid #DDD;
+    }
+
+        .nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover {
+            border-width: 0;
+        }
+
+        .nav-tabs > li > a {
+            border: none;
+            color: #ffffff;
+        }
+
+            .nav-tabs > li.active > a, .nav-tabs > li > a:hover {
+                border: none;
+                color: white !important;
+                background: #fff;
+            }
+
+            .nav-tabs > li > a::after {
+                content: "";
+                height: 2px;
+                position: absolute;
+                width: 100%;
+                left: 0px;
+                bottom: -1px;
+                transition: all 250ms ease 0s;
+                transform: scale(0);
+            }
+
+        .nav-tabs > li.active > a::after, .nav-tabs > li:hover > a::after {
+            transform: scale(1);
+        }
+
+    .tab-nav > li > a::after {
+        background: none repeat scroll 0% 0%;
+        color: #fff;
+    }
+
+    .tab-pane {
+        padding: 15px 0;
+    }
+
+    .tab-content {
+        padding: 20px;
+    }
+
+    .nav-tabs > li {
+        width: 20%;
+        text-align: center;
+    }
+
+    .card {
+        background: #FFF none repeat scroll 0% 0%;
+        box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+        margin-bottom: 30px;
+    }
+    /*body{ background: #EDECEC; padding:50px}*/
+
+    @@media all and (max-width:724px) {
+        .nav-tabs > li > a > span {
+            display: none;
+        }
+
+        .nav-tabs > li > a {
+            padding: 5px 5px;
+        }
+    }
+
+    .oInformationGrey {
+        background-color: rgba(238,238,238,0.5);
+    }
+
+    /*Price List*/
+
+
+
+    * {
+        box-sizing: border-box;
+    }
+
+    .columns {
+        float: left;
+        width: 20%;
+        padding: 8px;
+    }
+
+    .price {
+        list-style-type: none;
+        border: 1px solid #eee;
+        margin: 0;
+        padding: 0;
+        -webkit-transition: 0.3s;
+        transition: 0.3s;
+    }
+
+        .price:hover {
+            box-shadow: 0 8px 12px 0 rgba(0,0,0,0.2);
+        }
+
+        .price .header {
+            background-color: #111;
+            color: white;
+            font-size: 25px;
+        }
+
+        .price li {
+            border-bottom: 1px solid #eee;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .price .grey {
+            background-color: #eee;
+            font-size: 20px;
+        }
+
+        .price .pWhite {
+            font-size: 20px;
+        }
+
+    .button {
+        background-color: #4CAF50;
+        border: none;
+        color: white;
+        padding: 10px 25px;
+        text-align: center;
+        text-decoration: none;
+        font-size: 18px;
+    }
+
+    @@media only screen and (max-width: 600px) {
+        .columns {
+            width: 100%;
+        }
+    }
+</style>
+
+<html lang="en">
+<head>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Chatterbox Nursery</title>
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/landing-page.css" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
+        <div class="container topnav">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <a class="navbar-brand" href="index.html"><img src="../Content/Images/chatterimgvsm.jpg" alt="Site Logo"></a>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @*<a class="navbar-brand topnav" href="#">Home</a>*@
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#about">About us</a>
+                    </li>
+                    <li>
+                        <a href="#services">Our services</a>
+                    </li>
+                    <li>
+                        <a href="#contact">Contact us</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Header -->
+    <a name="about"></a>
+    <div class="intro-header" style="height:60%">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="intro-message" style="padding-top:8%">
+                        <h1>Chatterbox</h1>
+                        <h3>Day Nursery & Holiday Club</h3>
+                        <hr class="intro-divider">
+                        @*<ul class="list-inline intro-social-buttons">
+                                <li>
+                                    <a href="https://twitter.com/SBootstrap" class="btn btn-default btn-lg"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Twitter</span></a>
+                                </li>
+                                <li>
+                                    <a href="https://github.com/IronSummitMedia/startbootstrap" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
+                                </li>
+                                <li>
+                                    <a href="#" class="btn btn-default btn-lg"><i class="fa fa-linkedin fa-fw"></i> <span class="network-name">Linkedin</span></a>
+                                </li>
+                            </ul>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /.intro-header -->
+    <!-- Page Content -->
+    <a name="services"></a>
+    <div class="content-section-a">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">ChatterBox has one main aim...</h2>
+                    <h3 class="section-heading">To provide the very best day care there is for the under 5s.</h3>
+                    <p class="lead">We work in partnership with families from the very first contact to the day your child leaves to continue education at school.</p>
+                </div>
+                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                    <img class="img-responsive" src="~/Content/Images/nursery.jpg" alt="">
+                </div>
+            </div>
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /.content-section-a -->
+
+
+
+
+    <a name="location"></a>
+    <div class="content-section-c">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-lg-5" style="padding-top:43px;">
+                    <div id="map" style="width:100%; height:250px;"></div>
+                </div>
+                <div class="col-lg-3 col-lg-3" style="padding-top:43px;">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">Where are we?</h2>
+                    <p class="lead">Chatterbox Day Nursery<br />311 Sheffield Road,<br />Birdwell,<br />Barnsley,<br />South Yorkshire,<br />S70 5TU</p>
+                </div>
+                <div class="col-lg-4 col-lg-4">
+                    <hr class="section-heading-spacer" />
+                    <div class="clearfix"></div>
+                    <h2>Want to Contact us?</h2>
+                    <p class="lead"><br />Call us on 01226 361222<br /><br />Or you can email us at<br /><a style="text-decoration:underline;" href="mailto:enquiries@chatterbox-nursery.co.uk?subject=Enquiry">enquiries@chatterbox-nursery.co.uk</a></p>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" />
+
+
+
+    <!-- Nav tabs -->
+    <div class="card">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a style="background-color:yellowgreen;" href="#home" aria-controls="home" role="tab" data-toggle="tab"><i class="fa fa-sun-o"></i>  <span>Baby Room</span></a></li>
+            <li role="presentation"><a style="background-color:royalblue;" href="#profile" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-star"></i>  <span>Toddler Room</span></a></li>
+            <li role="presentation"><a style="background-color:blueviolet;" href="#messages" aria-controls="messages" role="tab" data-toggle="tab"><i class="fa fa-cloud"></i>  <span>Rainbow Room</span></a></li>
+            <li role="presentation"><a style="background-color:deeppink;" href="#extra" aria-controls="settings" role="tab" data-toggle="tab"><i class="fa fa-film"></i>  <span>Out Of School Club</span></a></li>
+            <li role="presentation"><a style="background-color:chocolate;" href="#settings" aria-controls="settings" role="tab" data-toggle="tab"><i class="fa fa-headphones"></i>  <span>Holiday Club</span></a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content" style="padding:0px;">
+            <div id="home" role="tabpanel" class="tab-pane active" style="padding:0px;">
+                <div style="height:500px; background: url( ../Content/Images/BabyRoom.JPG) no-repeat center center; background-size: cover;"></div>
+                <div class="content-section-b" style="background-color:yellowgreen;">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-3  col-sm-6 white">
+                                <hr class="section-heading-spacer">
+                                <div class="clearfix"></div>
+                                <h2 class="section-heading">The Baby Room</h2>
+                                <p class="lead">Chaterbox babies are provided stimulating play experiences in a warm and caring atmosphere with lots of love and cuddles.</p>
+                            </div>
+
+                            <div class="col-lg-9 white">
+                                <div class="col-md-4">
+                                    <h3 class="text-center">Luxury</h3>
+                                    <ul>
+                                        <li>We have a spacious, seperate sleeping area which incorporates a large viewing window enabling staff to easily monitor each child as they sleep, while ensuring they are not disturbed unnecessarily. Baby monitors will also be in use for added safety.</li>
+                                        <li>Children are welcome to stay in the Sunshine room until both parents and staff feel they are ready to move on, and the children are happy and settled.</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <h3 class="text-center">Play</h3>
+                                    <ul>
+                                        <li>All the toys and equipment we provide have been chosen to ensure that all children can discover and develop their potential in complete safety.</li>
+                                        <li>Children are introduced to a wide range of activities including sand & water play, painting, collage and role play enabling them to develop physically, intellectually, emotionally and socially.</li>
+                                        <li>Through participating in singing, rhymes and musical activities children will develop their language skills and increase in confidence.</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <h3 class="text-center">Trained Staff</h3>
+                                    <ul>
+                                        <li>The sunshine room is run by a qualified co-ordinator who has a minimum of two years experience working with children of this age group.</li>
+                                        <li>We have a high adult / child ratio and all our staff are qualified.</li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- /.container -->
+                    </div>
+                </div>
+
+            </div>
+            <div role="tabpanel" class="tab-pane" id="profile" style="padding:0px;">
+                <div style="height:500px; background: url( ../Content/Images/ToddlerRoom.JPG) no-repeat center center; background-size: cover;"></div>
+                <div class="content-section-b" style="background-color:royalblue;">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-3  col-sm-6 white">
+                                <hr class="section-heading-spacer">
+                                <div class="clearfix"></div>
+                                <h2 class="section-heading">The Toddler Room</h2>
+                                <p class="lead">Description about Toddler Room</p>
+                            </div>
+
+                            <div class="col-lg-9 white">
+                                <div class="col-md-4">
+                                    <h3 class="text-center">Heading1</h3>
+                                    <ul></ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <h3 class="text-center">Heading2</h3>
+                                    <ul></ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <h3 class="text-center">Heading3</h3>
+                                    <ul></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.container -->
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="messages" style="padding:0px;">
+                <div style="height:500px; background: url( ../Content/Images/RainbowRoom.JPG) no-repeat center center; background-size: cover;"></div>
+                <div class="content-section-b" style="background-color:blueviolet;">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-3  col-sm-6 white">
+                                <hr class="section-heading-spacer">
+                                <div class="clearfix"></div>
+                                <h2 class="section-heading">The Rainbow Room</h2>
+                                <p class="lead">During their time in the Rainbow Room the children will experience a range of fun and challenging play activities which will increase their confidence and develop valuable social skills in preparation for school.</p>
+                            </div>
+
+                            <div class="col-lg-9 white">
+                                <div class="col-md-4">
+                                    <h3 class="text-center">Learn</h3>
+                                    <ul>
+                                        <li>In planning such experiences staff are always aware of the need to cater for each individual childs' learning style. Young children need the opportunity to experience and explore both indoors and outside and both environments will be planned to ensure that children are given access to all areas of learning.</li>
+                                        <li>Through working closely with parents and carers, and by observing each child to assess their learning abilities, staff will be able to plan stimulating and challenging play activities to further their development.</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <h3 class="text-center">Play</h3>
+                                    <ul>
+                                        <li>Activities will be planned using the foundation stage curriculum where a balance of child-initiated and adult-led play experiences will be introduced.</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <h3 class="text-center">Trained Staff</h3>
+                                    <ul>
+                                        <li>All rainbow room staff are qualified early years practitioners with a working knowledge of the foundation stage curriculum.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.container -->
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="extra" style="padding:0px;">
+                <div style="height:500px; background: url( ../Content/Images/OosClub.JPG) no-repeat center center; background-size: cover;"></div>
+                <div class="content-section-b" style="background-color:deeppink;">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-3  col-sm-6 white">
+                                <hr class="section-heading-spacer">
+                                <div class="clearfix"></div>
+                                <h2 class="section-heading">Out Of School Club</h2>
+                                <p class="lead">Description about Out of school club</p>
+                            </div>
+
+                            <div class="col-lg-9 white">
+                                <div class="col-md-4">
+                                    <h3 class="text-center">Heading1</h3>
+                                    <ul></ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <h3 class="text-center">Heading2</h3>
+                                    <ul></ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <h3 class="text-center">Heading3</h3>
+                                    <ul></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.container -->
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="settings" style="padding:0px;">
+                <div style="height:500px; background: url( ../Content/Images/HolidayClub.JPG) no-repeat center center; background-size: cover;"></div>
+                <div class="content-section-b" style="background-color:chocolate;">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-3  col-sm-6 white">
+                                <hr class="section-heading-spacer">
+                                <div class="clearfix"></div>
+                                <h2 class="section-heading">Holiday Club</h2>
+                                <p class="lead">Chatterbox Holiday Club offers a range of fun and exciting activities for school aged children throughout the school holidays.</p>
+                            </div>
+
+                            <div class="col-lg-9 white">
+                                <div class="col-md-4">
+                                    <h3 class="text-center">Fun!</h3>
+                                    <ul>
+                                        <li>Drama</li>
+                                        <li>Computers</li>
+                                        <li>Indoor/ outdoor sports</li>
+                                        <li>Street Dance</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <h3 class="text-center">Fun!!</h3>
+                                    <ul>
+                                        <li>Playstation 2</li>
+                                        <li>Games</li>
+                                        <li>Trips</li>
+                                        <li>Musical Theatre</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <h3 class="text-center">Fun!!!</h3>
+                                    <ul>
+                                        <li>Arts and crafts</li>
+                                        <li>Irish Dancing</li>
+                                        <li>Street Dance</li>
+                                        <li>DJ WOrkshop</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.container -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    @*------------------------------------------------------------------------------------------------------*@
+
+    <div class="content-section-a">
+        <div class="container">
+            <hr class="section-heading-spacer">
+            <div class="clearfix" style="align-items:center;"></div>
+            <h2 style="text-align:center">Our Prices</h2>
+            <h3 class="text-center">Our nursery is open 8am - 6pm Monday - Friday</h3>
+
+
+            <div class="columns">
+                <ul class="price">
+                    <li style="background-color:yellowgreen; padding-bottom:25%;" class="header"><h2>Baby Room</h2><h3>(0-2 Years)</h3></li>
+                    <li class="grey">Full Week<br />£ 49.99</li>
+                    <li class="pWhite">Full Day<br />£9.99</li>
+                    <li class="grey">Morning<br />(8am - 1pm)<br />£5.00</li>
+                    <li class="pWhite">Afternoon<br />(1pm - 6pm)<br />£5.00</li>
+                    <li class="grey"><a class="button" id="babyRoomDetails">More Details</a></li>
+                </ul>
+            </div>
+
+            <div class="columns">
+                <ul class="price">
+                    <li style="background-color:royalblue;" class="header"><h2>Toddler Room</h2><h3>(2-3 Years)</h3></li>
+                    <li class="grey">Full Week<br />£ 49.99</li>
+                    <li class="pWhite">Full Day<br />£ 9.99</li>
+                    <li class="grey">Morning<br />(8am - 1pm)<br />£ 5.00</li>
+                    <li class="pWhite">Afternoon<br />(1pm - 6pm)<br />£ 5.00</li>
+                    <li class="grey"><a class="button" id="toddlerRoomDetails">More Details</a></li>
+                </ul>
+            </div>
+
+            <div class="columns">
+                <ul class="price">
+                    <li style="background-color:blueviolet;" class="header"><h2>Rainbow Room</h2><h3>(3-5 Years)</h3></li>
+                    <li class="grey">Full Week<br />£ 49.99</li>
+                    <li class="pWhite">Full Day<br />£9.99</li>
+                    <li class="grey">Morning<br />(8am - 1pm)<br />£5.00</li>
+                    <li class="pWhite">Afternoon<br />(1pm - 6pm)<br />£5.00</li>
+                    <li class="grey"><a href="#" class="button">More Details</a></li>
+                </ul>
+            </div>
+
+            <div class="columns">
+                <ul class="price">
+                    <li style="background-color:deeppink;" class="header"><h2>Out Of School Club</h2><h3>(School Age)</h3></li>
+                    <li class="grey">Full Week<br />£ 49.99</li>
+                    <li class="pWhite">Full Day<br />£ 9.99</li>
+                    <li class="grey">Morning<br />(8am - 1pm)<br />£ 5.00</li>
+                    <li class="pWhite">Afternoon<br />(1pm - 6pm)<br />£ 5.00</li>
+                    <li class="grey"><a href="#" class="button">More Details</a></li>
+                </ul>
+            </div>
+
+            <div class="columns">
+                <ul class="price">
+                    <li style="background-color:chocolate;" class="header"><h2>Holiday Club</h2><h3>(School Age)</h3></li>
+                    <li class="grey">Full Week<br />£ 49.99</li>
+                    <li class="pWhite">Full Day<br />£ 9.99</li>
+                    <li class="grey">Morning<br />(8am - 1pm)<br />£ 5.00</li>
+                    <li class="pWhite">Afternoon<br />(1pm - 6pm)<br />£ 5.00</li>
+                    <li class="grey"><a href="#" class="button">More Details</a></li>
+                </ul>
+            </div>
+
+
+        </div>
+        <!-- /.container -->
+    </div>
+
+    @*Modals------------------------------------------------------------------------------*@
+
+    @*Baby Room Modal*@
+    <div class="modal fade" id="babyRoomModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bRadiusModal header" style="background-color:yellowgreen; color:white;">
+                    <button type="button" class="close" data-dissmiss="modal">&times;</button>
+                    <h4 class="modal-title text-center">The Baby Room</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Here will be the full breakdown of prices/ what's included etc.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Toddler Room Modal*@
+    <div class="modal fade" id="toddlerRoomModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bRadiusModal header" style="background-color:royalblue; color:white;">
+                    <button type="button" class="close" data-dissmiss="modal">&times;</button>
+                    <h4 class="modal-title text-center">The Toddler Room</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Here will be the full breakdown of prices/ what's included etc.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    @*----------------------------------------------------------------------------------------------------------------------*@
+
+    @*Diet*@
+    <div class="content-section-b" style="background-color:brown;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3  col-sm-6 white">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">A Balanced Diet</h2>
+                    <p class="lead">Here at Chatterbox, we like all our children to maintain a balanced and healhy diet.<br />Here is a typical example of a menu they can expect to be provided.</p>
+                </div>
+
+                <div class="col-lg-9 white">
+                    <div class="col-md-4">
+                        <h3 class="text-center">Breakfast</h3>
+                        <ul>
+                            <li>Rice Crispies with milk</li>
+                            <li>Whole Milk and crumpets</li>
+                            <li>Malted wheat squares with milk</li>
+                            <li>Crusty Roll with spread, whole milk, yoghurt</li>
+                            <li>Puffed wheat with milk</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h3 class="text-center">Lunch</h3>
+                        <ul>
+                            <li>Pasta in tomato sauce, Garlic bread, Swiss roll</li>
+                            <li>Vegetable soup</li>
+                            <li>Cod in parsley sauce, mashed potato, peas and trifle</li>
+                            <li>Yorkshire pudding, roast chicken, boiled potatoes, carrots and brussel sprouts</li>
+                            <li>Vegetable curry & rice, steamed fruite sponge pudding with custard</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h3 class="text-center">Tea</h3>
+                        <ul>
+                            <li>Cheese and ham flan, beetroot salad</li>
+                            <li>Cheese Sandwich, Peaches & Jelly</li>
+                            <li>Baked beans on toast & Frozen ice-cream dessert</li>
+                            <li>Tuna sandwich on wholemeal bread with salad platter and yoghurt desert.</li>
+                            <li>Scrambled egg on toast, fresh fruit salad</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.container -->
+    </div>
+
+    <div class="content-section-b">
+        <div class="container">
+            <div class="panel-group" id="thisGroup">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a data-toggle="collapse" href="#collapse1"><h4>Items From Home</h4></a>
+                    </div>
+                    <div id="collapse1" class="panel-collapse collapse">
+                        <div class="panel-body">We encourage parents / carers to let their child bring any item which is used as a comforter (e.g. blanket, teddy, dummy etc) with them to nursery to help them feel secure. However, could we please request that you refrain from bringing large toys or items of value. We ask that sweets are saved for home.</div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a data-toggle="collapse" href="#collapse2"><h4>Clothing</h4></a>
+                    </div>
+                    <div id="collapse2" class="panel-collapse collapse">
+                        <div class="panel-body">As we provide a varied curriculum including baking, painting, gardening, clay activities etc.. it is important that children are dressed appropriately so that they feel comfortable participating. Aprons are always provided for such activities but it is inevitable that clothing will become soiled when children are enjoying themselves.</div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a data-toggle="collapse" href="#collapse3"><h4>Footwear</h4></a>
+                    </div>
+                    <div id="collapse3" class="panel-collapse collapse">
+                        <div class="panel-body">As many activities will involve children sitting and crawling on the floor area we ask that parents and carers provide a pair of indoor footwear (e.g. slippers). During wet weather children will still have the opportunity to access the outdoor play facilities and so wellington boots are a practical addition!</div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a data-toggle="collapse" href="#collapse4"><h4>Settling In</h4></a>
+                    </div>
+                    <div id="collapse4" class="panel-collapse collapse">
+                        <div class="panel-body">We understand that young children need time to adapt to a new setting and adjust to new faces and routines. Many children prefer to watch and listen from the sidelines before they feel secure enough to become involved. The settling in period is vital and is given high priority. With this in mind we encourage parents/carers to stay with their child in they wish, helping them to settle so that everyone is comfortable and happy with their new environment. We hope that this will make the transition into nursery a positive experience for everyone.</div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a data-toggle="collapse" href="#collapse5"><h4>Other Items</h4></a>
+                    </div>
+                    <div id="collapse5" class="panel-collapse collapse">
+                        <div class="panel-body">After lunch all the children will be encouraged to brush their teeth and wash their hands and face. We will provide a towel and flannel for each child in a labelled wash bag. We ask parents to provide a named toothbrush for their childs use. During hot weather we ask that children have their own sun hat and suncream.</div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a data-toggle="collapse" href="#collapse6"><h4>Security</h4></a>
+                    </div>
+                    <div id="collapse6" class="panel-collapse collapse">
+                        <div class="panel-body">The nursery has CCTV cameras in operation 24 hours a day to ensure the safety of children and staff on the premises. All entrances to the nursery have security keypads which means that only members of staff are able to gain access to the main areas of the nursery. All parents/carers are asked to supply a 'password' which can be used by anyone authorised to collect their child. Under no circumstances will a child be allowed to leave the nursery without the relevant password being given.</div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a data-toggle="collapse" href="#collapse7"><h4>Working With You</h4></a>
+                    </div>
+                    <div id="collapse7" class="panel-collapse collapse">
+                        <div class="panel-body">We know that leaving a child at nursery for the first time is not easy, but we try and make it a bit easier. We ensure there is every opportunity to talk to staff at the nursery, enabling us to answer any questions or queries you may have. We value parents and carers thoughts and opinions and welcome feedback. Open evenings are an opportunity to discuss the development of your child in more depth with staff, or you may prefer to arrange a meeting at an alternative time if you are unable to attend. Parents and carers are always welcome to come into the nursery and share some time with their child whenever they wish.</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- /.content-section-b -->
+    <!-- /.content-section-a -->
+    <a name="contact"></a>
+
+    <!-- /.container -->
+    <div class="container">
+        @RenderBody()
+    </div>
+
+
+    <!-- /.banner -->
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="list-inline">
+                        <li>
+                            <a href="#">Home</a>
+                        </li>
+                        <li class="footer-menu-divider">&sdot;</li>
+                        <li>
+                            <a href="#about">About</a>
+                        </li>
+                        <li class="footer-menu-divider">&sdot;</li>
+                        <li>
+                            <a href="#services">Services</a>
+                        </li>
+                        <li class="footer-menu-divider">&sdot;</li>
+                        <li>
+                            <a href="#contact">Contact</a>
+                        </li>
+                    </ul>
+                    <p>Chatterbox Day Nursery - 311 Sheffield Road, Birdwell, Barnsley, South Yorkshire. S70 5TU. Telephone: (01226) 361222</p>
+                    <p class="copyright text-muted small">Copyright &copy; chriscraven.co.uk 2017. All Rights Reserved</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+</body>
+</html>
+
+<script>
+    $(document).ready(function () {
+
+        var $thisGroup = $('#thisGroup');
+        $thisGroup.on('show', '.collapse', function () {
+            $thisGroup.find('.collapse .in').collapse('hide');
+        });
+
+    });
+    function myMap() {
+        var mapCanvas = document.getElementById("map");
+        var mapOptions = {
+            center: new google.maps.LatLng(51.5, -0.2),
+            zoom: 12
+        }
+        var map = new google.maps.Map(mapCanvas, mapOptions);
+
+        var infoWindow = new google.maps.InfoWindow({ map: map });
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var pos = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+
+                infoWindow.setPosition(pos);
+                infoWindow.setContent('Location found.');
+                map.setCenter(pos);
+            }
+            , function () {
+                handleLocationError(true, infoWindow, map.getCenter());
+            });
+        }
+        else {
+            handleLocationError(false, infoWindow, map.getCenter());
+        }
+    }
+
+    setCarouselHeight('#sunshineRoomCarousel');
+
+    setCarouselHeight('#rainbowRoomCarousel');
+
+    function setCarouselHeight(id) {
+        var slideHeight = [];
+        $(id + ' .item').each(function () {
+            // add all slide heights to an array
+            slideHeight.push($(this).height());
+        });
+
+        // find the tallest item
+        max = Math.max.apply(null, slideHeight);
+
+        // set the slide's height
+        $(id + ' .carousel-content').each(function () {
+            $(this).css('height', max + 'px');
+        });
+    }
+
+    $('#babyRoomDetails').click(function () {
+        $('#babyRoomModal').modal('show');
+    });
+
+    $('#toddlerRoomDetails').click(function () {
+        $('#toddlerRoomModal').modal('show');
+    });
+    
+
+
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCyRwUcdP5DkSyk5YWm2k7e38XABfmp7o8&callback=myMap"></script>
